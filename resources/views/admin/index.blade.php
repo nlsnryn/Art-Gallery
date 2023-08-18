@@ -15,7 +15,7 @@
                 <a href="{{ route('admin.create') }}" class="bg-zinc-900 text-white text-xs sm:text-base px-4 py-2 rounded hover:bg-zinc-800">Create Admin Account</a>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto overflow-hidden">
                 @if ($admins->count())
                 <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 snap-x">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

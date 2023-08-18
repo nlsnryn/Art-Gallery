@@ -1,13 +1,13 @@
 <x-layout>
     <main class="max-w-screen-2xl mx-auto p-10">
-        <div class="flex flex-shrink-0 gap-5 text-zinc-900">
+        <div class="flex flex-shrink-0 flex-col lg:flex-row gap-5 text-zinc-900">
             @if ($artwork->image)
-                <div class="w-1/2 image">
-                    <img src="{{ asset("storage/$artwork->image") }}" alt="Artwork" class="w-full object-fill h-auto rounded">
-                </div>
+            <div class="w-full lg:w-1/2 image">
+                <img src="{{ asset("storage/$artwork->image") }}" alt="Artwork" class="w-full object-cover h-auto rounded">
+            </div>
             @endif
         
-            <div class="bg-gray-100 w-1/2 rounded p-20">
+            <div class="bg-gray-100 w-full lg:w-1/2 rounded p-10 sm:p-20">
                 <h1 class="font-medium text-2xl uppercase tracking-tight">{{ $artwork->title }}</h1>
                 <p class="font-normal text-lg leading-tight mt-5">{{ $artwork->description }}</p>
                 <h4 class="uppercase font-medium text-sm tracking-wide mt-5">Date publish: {{ $artwork->created_at->format('F d Y') }}</h4>

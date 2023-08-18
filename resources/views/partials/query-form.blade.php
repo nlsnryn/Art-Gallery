@@ -13,7 +13,7 @@
             </label>
             <input
                 type="text"
-                class="border border-gray-200 rounded p-2 w-full bg-gray-300"
+                class="border border-gray-200 rounded p-1 sm:p-2 w-full bg-gray-300"
                 name="client_name"
                 value="{{ old('client_name') }}"
             />
@@ -32,7 +32,7 @@
             </label>
             <input
                 type="email"
-                class="border border-gray-200 rounded p-2 w-full bg-gray-300"
+                class="border border-gray-200 rounded p-1 sm:p-2 w-full bg-gray-300"
                 name="client_email"
                 value="{{ old('client_email') }}"
             />
@@ -51,7 +51,7 @@
             </label>
             <input
                 type="number"
-                class="border border-gray-200 rounded p-2 w-full bg-gray-300"
+                class="border border-gray-200 rounded p-1 sm:p-2 w-full bg-gray-300"
                 name="contact_number"
                 value="{{ old('contact_number') }}"
             />
@@ -67,7 +67,7 @@
             </label>
             <input
                 type="text"
-                class="border border-gray-200 rounded p-2 w-full bg-gray-300"
+                class="border border-gray-200 rounded p-1 sm:p-2 w-full bg-gray-300"
                 name="location"
                 value="{{ old('location') }}"
             />
@@ -82,7 +82,7 @@
                 >Message</label
             >
             <textarea
-                class="border border-gray-200 rounded p-2 w-full bg-gray-300"
+                class="border border-gray-200 rounded p-1 sm:p-2 w-full bg-gray-300"
                 name="message"
                 rows="3"
             >{{ old('message') }}</textarea>

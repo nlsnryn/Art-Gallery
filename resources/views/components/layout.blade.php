@@ -20,9 +20,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    
-
     <x-header/>
+    <div id="authentication" data-is-authenticated="{{ auth()->check() ? 'true' : 'false' }}"></div>
     <div class="bg-white min-h-screen">
         {{ $slot }}
     </div>
