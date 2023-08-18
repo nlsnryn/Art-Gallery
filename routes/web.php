@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 // Route for guest
 Route::middleware('guest')->group(function () {
     Route::get('/', [GuestController::class, 'index'])->name('dashboard');
+    Route::get('/search-artworks', [GuestController::class, 'search_artworks'])->name('search.artworks');
     Route::get('/guest/artwork/{artwork}', [GuestController::class, 'show_art'])->name('guest.art.show');
     Route::get('/guest/artist/{artist}', [GuestController::class, 'show_artist'])->name('guest.artist.show');
 

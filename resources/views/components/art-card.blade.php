@@ -1,5 +1,8 @@
-<x-card>
-    <div id="art">
+{{-- @if(request()->ajax())
+    <div id="art" class="bg-gray-100 my-4 sm:my-0 lg:w-72 rounded p-2">
+    </div>
+@else --}}
+    <x-card>
         @if (auth()->user())
         <a href="{{ route('artwork.show', $artwork->id) }}">
         @else
@@ -24,5 +27,5 @@
                 </div>
             </div>
         </a>
-    </div>
-</x-card>
+    </x-card>
+{{-- @endif --}}

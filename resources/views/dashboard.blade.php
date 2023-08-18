@@ -32,7 +32,7 @@
             </div>
 
             @if (!$artists->count())
-                <h1 class="text-center font-medium text-3xl mt-5">No Artist Record yet.</h1>
+            <h1 class="text-center font-medium text-3xl mt-5">No Artist Record yet.</h1>
             @endif
         </div>
     </main>
