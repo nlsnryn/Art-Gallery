@@ -44,7 +44,7 @@
                     <a
                         href="{{ route('dashboard') }}"
                         class="inline-block text-white rounded-xl uppercase mt-2 hover:underline cursor-pointer tracking-tighter font-medium"
-                        >Dashboard</a
+                        >Artworks and artist</a
                     >
                     <a
                         href="{{ route('login') }}"

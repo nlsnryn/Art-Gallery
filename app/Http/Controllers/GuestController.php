@@ -51,6 +51,7 @@ class GuestController extends Controller
      */
     protected function search_artworks()
     {
+        dd(request()->all());
         $artworks = Artwork::with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get(); 
         // \Log::error($artworkTemplate);
         // return response()->json(['artworks' => $artworks]);
