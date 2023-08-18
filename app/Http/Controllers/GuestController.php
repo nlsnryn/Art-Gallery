@@ -47,7 +47,7 @@ class GuestController extends Controller
     /**
      * Search for Artwork
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function search_artworks()
     {

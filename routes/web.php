@@ -28,13 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['check.userlevel:super admin'])->group(function () {
         Route::resource('/admin', AdminController::class);
     });
-
     Route::middleware(['check.userlevel:super admin,admin'])->group(function () {
         Route::resource('/artist', ArtistController::class);
     });
-    
     Route::resource('/artwork', ArtController::class);
 
+    //Route for Artwork's Queries
     Route::prefix('/artwork/{artwork}')->group(function () {
         Route::prefix('queries')->group(function () {
             Route::get('/history', [QueryController::class, 'history'])->name('query.history');
@@ -42,6 +41,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/{query}', [QueryController::class, 'show'])->name('query.show');
         });
     });
+
+    // Route for Searching
+    Route::get('/auth/search-artworks', [ArtController::class, 'search_artworks'])->name('auth.search.artworks');
+    Route::get('/auth/search-artists', [ArtistController::class, 'search_artists'])->name('auth.search.artists');
+    Route::get('/auth/search-admins', [AdminController::class, 'search_admins'])->name('auth.search.admins');
 });
 
 // Route for guest

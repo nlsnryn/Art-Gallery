@@ -172,4 +172,22 @@ class ArtController extends Controller
       Storage::disk('public')->put($path, $contents);
       $artwork->update(['image' => $path]);
    }
+
+   
+   /**
+     * Search for Artwork Record for Authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+   protected function search_artworks()
+   {
+      $artworks = Artwork::where('artist_id', auth()->user()->artist->id)->with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get(); 
+
+      $renderedArtworks = '';
+      foreach ($artworks as $artwork) {
+         $renderedArtworks .= view('components.art-card', ['artwork' => $artwork])->render();
+      }
+      
+      return response()->json(['artworks' => $renderedArtworks]);
+   }
 }

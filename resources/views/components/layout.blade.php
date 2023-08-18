@@ -42,38 +42,6 @@
             document.getElementById('nav-ekis').classList.toggle('hidden');
             document.getElementById('nav-hamburger').classList.toggle('hidden');
         });
-
-        //JQuery
-        $(document).ready(function () {
-            $('#search-form').submit(function(event) {
-                event.preventDefault();
-                $value=$('[name="search"]').val();
-
-                console.log($value);
-                fetchArtist($value);
-            });
-
- 
-            function fetchArtist($value) {
-                $.ajax({
-                    type: "GET",
-                    url: "/search-artworks",
-                    dataType: "json",
-                    data: {'search':$value},
-                    success: function (response) {
-                        if(response.artworks.length > 0) {
-                            $('#artwork-container').empty().append(response.artworks);
-                        } else {
-                            $('#artwork-container').empty().append('<h1 class="text-center font-medium text-3xl mt-5">No Artist Record yet.</h1>')
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.log("AJAX Error:", error);
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-        });
     </script>
 </body>
 </html>

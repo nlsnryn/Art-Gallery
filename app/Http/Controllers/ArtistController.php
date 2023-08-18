@@ -162,4 +162,21 @@ class ArtistController extends Controller
         Storage::disk('public')->put($path, $contents);
         $artist->update(['image' => $path]);
     }
+
+    /**
+     * Search for Artist Record for Authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function search_artists()
+    {
+        $artists = Artist::latest()->filter(request(['search']))->get(); 
+
+        $renderedArtists = '';
+        foreach ($artists as $artist) {
+            $renderedArtists .= view('components.artist-card', ['artist' => $artist])->render();
+        }
+        
+        return response()->json(['artists' => $renderedArtists]);
+    }
 }

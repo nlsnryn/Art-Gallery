@@ -84,4 +84,21 @@ class AdminController extends Controller
         $admin->delete();
         return redirect(route('admin.index'));
     }
+
+    /**
+     * Search for Admin Record for Authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function search_admins()
+    {
+        $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get(); 
+
+        $renderedAdmins = '';
+        foreach ($admins as $admin) {
+            $renderedAdmins .= view('partials.admin-data', ['admin' => $admin])->render();
+        }
+        
+        return response()->json(['admins' => $renderedAdmins]);
+    }
 }
