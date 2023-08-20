@@ -10,7 +10,7 @@ use App\Http\Requests\Artwork\ArtworkStoreRequest;
 use App\Http\Requests\Artwork\ArtworkUpdateRequest;
 
 class ArtController extends Controller
-{   
+{
    /**
     * Display Artist's Artwork if the Artist is Authenticated
     * Display all Artist if the authenticated user is admin or super admin
@@ -20,17 +20,15 @@ class ArtController extends Controller
     */
    public function index(Request $request)
    {
-      if(auth()->user()->user_level == 'artist')
-      {  
+      if (auth()->user()->user_level == 'artist') {
          $user = auth()->user();
          $artworks = Artwork::where('artist_id', $user->artist->id)->latest()->filter(request(['category', 'search']))->get();
          return view('artwork.index', ['artworks' => $artworks]);
       } else {
          return redirect()->route('artist.show', ['artist' => $request->query('artist')]);
       }
-      
    }
-   
+
    /**
     * Display create form for Artwork
     *
@@ -40,7 +38,7 @@ class ArtController extends Controller
    {
       return view('artwork.create');
    }
-   
+
    /**
     * Store artwork data from create from into artworks table
     *
@@ -53,12 +51,9 @@ class ArtController extends Controller
          $artistId = '';
 
          // Check which artistId will store to variable auth id or query
-         if(auth()->user()->user_level == 'artist') 
-         {
+         if (auth()->user()->user_level == 'artist') {
             $artistId = auth()->user()->artist->id;
-         } 
-         else 
-         {
+         } else {
             $artistId = $request->query('artist_id');
          }
 
@@ -71,26 +66,21 @@ class ArtController extends Controller
          ]);
 
          // Store an image
-         if($request->file('image')) 
-         {
+         if ($request->file('image')) {
             $this->store_image($request, $artwork);
          }
 
-         if(auth()->user()->user_level == 'artist') 
-         {
+         if (auth()->user()->user_level == 'artist') {
             return redirect(route('artwork.index'));
-         } 
-         else 
-         {
+         } else {
             return redirect(route('artwork.index', ['artist' => $artistId]));
          }
-      } catch(\Exception $e) {
+      } catch (\Exception $e) {
          $errorMessage = $e->getMessage();
          return back()->withErrors(['error' => $errorMessage]);
       }
-      
    }
-   
+
    /**
     * Showing specific Artwork that request from the user
     *
@@ -101,7 +91,7 @@ class ArtController extends Controller
    {
       return view('artwork.show', ['artwork' => $artwork]);
    }
-   
+
    /**
     * Display edit form to update Artwork
     *
@@ -112,7 +102,7 @@ class ArtController extends Controller
    {
       return view('artwork.edit', ['artwork' => $artwork]);
    }
-   
+
    /**
     * Update artwork data from edit form and save into artworks table
     *
@@ -126,11 +116,9 @@ class ArtController extends Controller
          $artwork->update($request->except('image'));
 
          // Updating image if there's an image request 
-         if($request->file('image')) 
-         {
+         if ($request->file('image')) {
             // Check if the current artwork has image if there's then unlink the current image to storage
-            if (!empty($artwork->image)) 
-            {
+            if (!empty($artwork->image)) {
                Storage::disk('public')->delete($artwork->image);
             }
 
@@ -138,12 +126,12 @@ class ArtController extends Controller
          }
 
          return redirect(route('artwork.show', $artwork->id));
-      } catch(\Exception $e) {
+      } catch (\Exception $e) {
          $errorMessage = $e->getMessage();
          return back()->withErrors(['error' => $errorMessage]);
       }
    }
-   
+
    /**
     * Delete artwork
     *
@@ -151,11 +139,11 @@ class ArtController extends Controller
     * @return \Illuminate\Http\RedirectResponse
     */
    public function destroy(Artwork $artwork)
-   {  
+   {
       $artwork->delete();
       return redirect(route('artwork.index'));
    }
-   
+
    /**
     * Method that will called if there's an update in image
     *
@@ -173,21 +161,21 @@ class ArtController extends Controller
       $artwork->update(['image' => $path]);
    }
 
-   
+
    /**
-     * Search for Artwork Record for Authenticated User
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * Search for Artwork Record for Authenticated User
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
    protected function search_artworks()
    {
-      $artworks = Artwork::where('artist_id', auth()->user()->artist->id)->with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get(); 
+      $artworks = Artwork::where('artist_id', auth()->user()->artist->id)->with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get();
 
       $renderedArtworks = '';
       foreach ($artworks as $artwork) {
          $renderedArtworks .= view('components.art-card', ['artwork' => $artwork])->render();
       }
-      
+
       return response()->json(['artworks' => $renderedArtworks]);
    }
 }

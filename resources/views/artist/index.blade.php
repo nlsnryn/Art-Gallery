@@ -9,7 +9,7 @@
         </form>
 
         <div class="flex justify-end">
-            <a href="{{ route('artist.create') }}" class="bg-zinc-900 rounded px-5 py-2 font-semibold uppercase text-sm tracking-wide hover:bg-zinc-800">
+            <a href="{{ route('artist.create') }}" class="bg-zinc-900 text-white rounded px-5 py-2 font-semibold uppercase text-sm tracking-wide hover:bg-zinc-800">
                 Add Artist
             </a>
         </div>

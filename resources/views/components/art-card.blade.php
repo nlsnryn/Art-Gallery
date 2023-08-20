@@ -27,17 +27,13 @@
             </div>
         </a>
     @else
-        @if (auth()->user())
-        <a href="{{ route('artwork.show', $artwork->id) }}">
-        @else
-        <a href="{{ route('guest.art.show', $artwork->id) }}" class="flex flex-row-reverse justify-between items-start w-full p-5 ">
-        @endif
+        <a href="{{ route('guest.art.show', $artwork->id) }}" class="flex flex-col sm:flex-row-reverse justify-between items-start w-full p-5">
             @if($artwork->image)
             <div class="image">
                 <img src="{{ asset("storage/$artwork->image") }}" alt="download" class="object-cover h-48 w-full">
             </div>
             @endif
-            <div class=" px-2 py-2 flex flex-col justify-between w-1/2 2xl:max-w-xl">
+            <div class="px-2 py-2 flex flex-col justify-between w-full sm:w-1/2 2xl:max-w-xl">
                 <div class="flex-grow">
                     <h1 class="font-medium text-2xl">{{ $artwork->title }}</h1>
                     <p class="line-clamp-2 text-base">{{ $artwork->description }}</p>

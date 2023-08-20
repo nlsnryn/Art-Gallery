@@ -1,4 +1,8 @@
-<header class="bg-red-600">
+@php
+    $dynamicBackground = auth()->user() ? 'bg-red-600' : 'bg-zinc-900';
+@endphp
+
+<header class="{{ $dynamicBackground }}">
     <nav class="max-w-screen-2xl mx-auto py-5">
         <div class="text-gray-100 flex justify-between items-center px-10">
             <div id="logo" class="">
@@ -18,7 +22,7 @@
             <div class="hidden sm:block">
             @if (auth()->user())
                 <div class="flex items-center gap-5">
-                    <h1 class="hidden md:block mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }}, Nelson Ryan</h1>
+                    <h1 class="hidden sm:block mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }}, Nelson Ryan</h1>
 
                     @if (auth()->user()->user_level == 'super admin')
                         <a href="{{ route('admin.index') }}">
@@ -64,10 +68,10 @@
     </nav>
 </header>
 
-<nav id="nav-menu" class="bg-red-600 px-10 py-5 absolute inset-x-0 hidden transition-all duration-150 ease-out">
+<nav id="nav-menu" class="px-10 py-5 absolute inset-x-0 hidden transition-all duration-150 ease-out {{ $dynamicBackground }}">
     @if (auth()->user())
         <div class="flex items-center justify-center gap-5">
-            <h1 class="mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }}, Nelson Ryan</h1>
+            <h1 class="mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }}, {{ auth()->user()->name }}</h1>
 
             @if (auth()->user()->user_level == 'super admin')
                 <a href="{{ route('admin.index') }}">

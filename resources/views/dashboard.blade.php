@@ -1,7 +1,11 @@
+@php
+    $dynamicBackground = auth()->user() ? 'bg-red-600' : 'bg-zinc-900';
+@endphp
+
 <x-layout>
     @include('partials.hero')
     
-    <form id="search-artwork" action="" class="pb-8 bg-red-500 px-5">
+    <form id="search-artwork" action="" class="pb-8 px-5 {{ $dynamicBackground }}">
         <x-search :placeholder="'Artwork Title or Categories'"/>
     </form>
 
@@ -16,11 +20,11 @@
                 </div>
 
                 @if(auth()->user())
-                    {{-- <div id="artwork-container" class="card-container sm:grid sm:grid-cols-2 md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid xl:grid-cols-4 gap-6 mx-0 overflow-hidden">
+                    <div id="artwork-container" class="card-container sm:grid sm:grid-cols-2 md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid xl:grid-cols-4 gap-6 mx-0 overflow-hidden">
                         @foreach ($artworks as $artwork)
                             <x-art-card id="art-card" :artwork="$artwork" />
                         @endforeach
-                    </div> --}}
+                    </div>
                 @else
                     <div id="artwork-container" class="card-container space-y-4 w-full">
                         @foreach ($artworks as $artwork)
@@ -79,7 +83,6 @@
                 fetchGuestArtwork($value);
             });
 
- 
             function fetchGuestArtwork($value) {
                 $.ajax({
                     type: "GET",
@@ -87,7 +90,6 @@
                     dataType: "json",
                     data: {'search':$value},
                     success: function (response) {
-                        console.log(response.artworks)
                         if(response.artworks.length > 0) {
                             $('#no-fetch').empty();
                             $('#artwork-container').empty().append(response.artworks);

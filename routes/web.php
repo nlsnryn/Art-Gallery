@@ -50,14 +50,15 @@ Route::middleware('auth')->group(function () {
 
 // Route for guest
 Route::middleware('guest')->group(function () {
+    // Route::get('/search-artworks', [GuestController::class, 'search_artworks'])->middleware('add.test')->name('search.artworks');
     Route::get('/', [GuestController::class, 'index'])->name('dashboard');
-    Route::get('/search-artworks', [GuestController::class, 'search_artworks'])->middleware('add.test')->name('search.artworks');
+    Route::get('/search-artworks', [GuestController::class, 'search_artworks'])->name('search.artworks');
     Route::get('/guest/artwork/{artwork}', [GuestController::class, 'show_art'])->name('guest.art.show');
     Route::get('/guest/artist/{artist}', [GuestController::class, 'show_artist'])->name('guest.artist.show');
 
     Route::get('/login', [AuthenticationController::class, 'create'])->name('login');
     Route::post('login', [AuthenticationController::class, 'login']);
-    
+
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
     Route::post('register', [RegisterController::class, 'register']);
 
@@ -65,16 +66,6 @@ Route::middleware('guest')->group(function () {
         Route::prefix('queries')->group(function () {
             Route::get('/', [QueryController::class, 'success'])->name('query.success');
             Route::post('/', [QueryController::class, 'store'])->name('query.store');
-
         });
     });
 });
-
-
-
-
-
-
-
-
-

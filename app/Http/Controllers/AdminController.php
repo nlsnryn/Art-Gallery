@@ -9,19 +9,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
-{    
+{
     /**
      * Display all admin level in Users table
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function index() 
+    public function index()
     {
         $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
 
         return view('admin.index', ['admins' => $admins]);
     }
-    
+
     /**
      * Display a form for Creating Admin account
      *
@@ -31,7 +31,7 @@ class AdminController extends Controller
     {
         return view('admin.create');
     }
-    
+
     /**
      * Save all request from AdminStoreRequest to Admin database
      *
@@ -41,13 +41,13 @@ class AdminController extends Controller
     public function store(AdminStoreRequest $request)
     {
         $admin = $request->all();
-        $admin['user_level'] = UserLevel::ADMIN; 
+        $admin['user_level'] = UserLevel::ADMIN;
 
         $admin = User::create($admin);
 
         return redirect(route('admin.index'));
     }
-    
+
     /**
      * Show form for Editing Admin account
      *
@@ -58,7 +58,7 @@ class AdminController extends Controller
     {
         return view('admin.edit', ['admin' => $admin]);
     }
-    
+
     /**
      * Update all changes from Edit form then update into database
      *
@@ -72,7 +72,7 @@ class AdminController extends Controller
 
         return redirect(route('admin.index'));
     }
-    
+
     /**
      * Delete admin account
      *
@@ -92,13 +92,13 @@ class AdminController extends Controller
      */
     protected function search_admins()
     {
-        $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get(); 
+        $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
 
         $renderedAdmins = '';
         foreach ($admins as $admin) {
             $renderedAdmins .= view('partials.admin-data', ['admin' => $admin])->render();
         }
-        
+
         return response()->json(['admins' => $renderedAdmins]);
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Artwork;
 use Illuminate\Http\Request;
 
 class GuestController extends Controller
-{    
+{
     /**
      * Show all Artworks and artist in Guest Dashboard
      *
@@ -15,13 +15,13 @@ class GuestController extends Controller
      */
     public function index()
     {
-        $artworks = Artwork::latest()->filter(request(['category', 'search']))->get(); 
-        // $artworks = Artwork::latest()->get();
+        // $artworks = Artwork::latest()->filter(request(['category', 'search']))->get();
         // dd($artworks);
+        $artworks = Artwork::latest()->get();
         $artists = Artist::with('artworks')->get();
         return view('dashboard', ['artworks' => $artworks, 'artists' => $artists]);
     }
-    
+
     /**
      * Show specific Artwork for Guest viewing
      *
@@ -32,18 +32,18 @@ class GuestController extends Controller
     {
         return view('art-show', ['artwork' => $artwork]);
     }
-   
-   /**
-    * Show specific Artist for Guest viewing
-    *
-    * @param  mixed $artist
-    * @return \Illuminate\Contracts\View\View
-    */
+
+    /**
+     * Show specific Artist for Guest viewing
+     *
+     * @param  mixed $artist
+     * @return \Illuminate\Contracts\View\View
+     */
     public function show_artist(Artist $artist)
     {
         return view('artist-show', ['artist' => $artist]);
     }
-    
+
     /**
      * Search for Artwork
      *
@@ -51,8 +51,7 @@ class GuestController extends Controller
      */
     protected function search_artworks()
     {
-        dd(request()->all());
-        $artworks = Artwork::with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get(); 
+        $artworks = Artwork::with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get();
         // \Log::error($artworkTemplate);
         // return response()->json(['artworks' => $artworks]);
 
@@ -60,7 +59,7 @@ class GuestController extends Controller
         foreach ($artworks as $artwork) {
             $renderedArtworks .= view('components.art-card', ['artwork' => $artwork])->render();
         }
-        
+
         return response()->json(['artworks' => $renderedArtworks]);
     }
 }

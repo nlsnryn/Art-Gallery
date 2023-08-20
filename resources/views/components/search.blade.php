@@ -1,3 +1,7 @@
+@php
+    $dynamicBackground = auth()->user() ? 'bg-red-600 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-400';
+@endphp
+
 <div class="max-w-screen-2xl mx-auto px-0 sm:px-10">
     <div class="relative border-2 border-gray-100 rounded-lg">
         <div class="absolute top-4 left-3">
@@ -15,7 +19,7 @@
         <div class="absolute top-2 right-2">
             <button
                 type="submit"
-                class="h-10 w-20 text-white rounded-lg text-sm bg-red-500 hover:bg-red-600"
+                class="h-10 w-20 text-white rounded-lg text-sm {{ $dynamicBackground }}"
             >
                 Search
             </button>
