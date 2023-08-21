@@ -25,9 +25,11 @@
             <h1 class="text-zinc-900 text-2xl uppercase tracking-tight font-medium">Artworks</h1>
 
             <div class="card-container sm:grid sm:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid xl:grid-cols-4 gap-4 sm:mx-4 mt-5">
-                @foreach ($artist->artworks as $artwork)
+                @forelse ($artist->artworks as $artwork)
                     <x-art-card :artwork="$artwork"/>
-                @endforeach
+                @empty
+                    <h1 class="text-center text-zinc-900 font-medium text-2xl mt-20 uppercase tracking-tighter">No Artwork Record yet.</h1>
+                @endforelse
             </div>
         </div>
     </main>

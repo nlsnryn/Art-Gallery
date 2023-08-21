@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form method="POST" action="{{ route('artist.store') }}" enctype="multipart/form-data">
+                <form id="store-artist" method="POST" action="" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-6">
                         <label for="name" class="inline-block text-lg mb-2">
@@ -21,9 +21,8 @@
                             value="{{ old('name') }}"
                         />
 
-                        @error('name')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        <div id="error-name">
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -37,9 +36,12 @@
                             value="{{ old('email') }}"
                         />
                         
-                        @error('email')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                         <div id="error-email">
+                        </div>
+
+                        {{-- @error('email')
+                            <p class="error text-red-500 mt-1 text-xs"></p>
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -56,9 +58,12 @@
                             value="{{ old('password') }}"
                         />
 
-                        @error('password')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                         <div id="error-password">
+                        </div>
+
+                        {{-- @error('password')
+                            <p class="error text-red-500 mt-1 text-xs"></p>
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -75,9 +80,12 @@
                             value="{{ old('password_confirmation') }}"
                         />
 
-                        @error('password_confirmation')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        <div id="error-password_confirmation">
+                        </div>
+
+                        {{-- @error('password_confirmation')
+                            <p class="error text-red-500 mt-1 text-xs"></p>
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -94,9 +102,12 @@
                             value="{{ old('location') }}"
                         />
 
-                        @error('location')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        <div id="error-location">
+                        </div>
+
+                        {{-- @error('location')
+                            <p class="error text-red-500 mt-1 text-xs"></p>
+                        @enderror --}}
                     </div>
 
                     <div class="mb-10">
@@ -112,9 +123,12 @@
                             name="image"
                         />
 
-                        @error('image')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        <div id="error-image">
+                        </div>
+
+                        {{-- @error('image')
+                            <p class="error text-red-500 mt-1 text-xs"></p>
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -132,4 +146,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#store-artist').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                storeArtist(formData);
+            });
+
+            function storeArtist(formData) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('artist.store') }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        window.location.href = "{{ route('artist.index') }}";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>

@@ -1,7 +1,7 @@
 <x-layout>    
     <main class="max-w-screen-2xl mx-auto p-10">
         <div class="text-zinc-900 py-10 text-center">
-            <h1 class="sm:text-4xl text-2xl font-medium uppercase tracking-wide">Super Admin! Manage all</h1>
+            <h1 class="sm:text-4xl text-2xl font-medium uppercase tracking-wide">Admin management</h1>
             <div class="space-y-2 sm:space-y-0 sm:space-x-2 mt-5 flex flex-col sm:flex-row justify-center items-center">
                 <a href="{{ route('admin.index') }}" class="text-xl font-medium uppercase border-2 border-zinc-900 px-4 py-1 rounded-md cursor-pointer hover:bg-red-500 hover:text-gray-100 hover:border-red-500 tracking-tighter transition-all ease-in-out duration-150">Manage Admin</a>
                 <a href="{{ route('artist.index') }}" class="text-xl font-medium uppercase border-2 border-zinc-900 px-4 py-1 rounded-md cursor-pointer hover:bg-red-500 hover:text-gray-100 hover:border-red-500 tracking-tighter transition-all ease-in-out duration-150">Manage Artist</a>

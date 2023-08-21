@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Authentication\RegisterRequest;
 
 class ArtistController extends Controller
-{    
+{
     /**
      * Showing all Artist
      *
@@ -23,7 +23,7 @@ class ArtistController extends Controller
         $artists = Artist::latest()->filter(request(['search']))->get();
         return view('artist.index', ['artists' => $artists]);
     }
-    
+
     /**
      * Display create form for Creating Artist account
      *
@@ -33,7 +33,7 @@ class ArtistController extends Controller
     {
         return view('artist.create');
     }
-    
+
     /**
      * Store an artist record
      *
@@ -56,19 +56,19 @@ class ArtistController extends Controller
             ]);
 
             // Store an image
-            if($request->file('image')) 
-            {
+            if ($request->file('image')) {
                 $this->store_artist_image($request, $artist);
             }
-            
-            return redirect(route('artist.index'));
 
-        } catch(\Exception $e) {
-            $errorMessage = $e->getMessage();
-            return back()->withErrors(['error' => $errorMessage]);
+            return redirect(route('artist.index'));
+            // return response()->json('Saved successfully');
+        } catch (\Exception $e) {
+            // $errorMessage = $e->getMessage();
+            // return back()->withErrors(['error' => $errorMessage]);
+            return response()->json(['errors' => $e->getMessage()], 422);
         }
     }
-    
+
     /**
      * Display Edit form for Artist
      *
@@ -79,7 +79,7 @@ class ArtistController extends Controller
     {
         return view('artist.edit', ['artist' => $artist]);
     }
-    
+
     /**
      * Show specific Artist details
      *
@@ -90,17 +90,15 @@ class ArtistController extends Controller
     {
         $totalSold = null;
 
-        foreach ($artist->artworks as $artwork)
-        {
-            if ($artwork->sold)
-            {
+        foreach ($artist->artworks as $artwork) {
+            if ($artwork->sold) {
                 $totalSold += 1;
             }
         }
 
         return view('artist.show', ['artist' => $artist, 'sold' => $totalSold]);
     }
-    
+
     /**
      * Update an artwork data from Edit form and update into artworks table
      *
@@ -118,21 +116,19 @@ class ArtistController extends Controller
         $artist->update([
             'location' => $request->location,
         ]);
-        
+
         // Check if the current artist has image if there's then unlink the current image to storage
-        if($request->file('image')) 
-        {
-            if (!empty($artist->image)) 
-            {
-               Storage::disk('public')->delete($artist->image);
+        if ($request->file('image')) {
+            if (!empty($artist->image)) {
+                Storage::disk('public')->delete($artist->image);
             }
 
             $this->store_artist_image($request, $artist);
-         }
+        }
 
-         return redirect(route('artist.index'));
+        return redirect(route('artist.index'));
     }
-    
+
     /**
      * Delete specific artist
      *
@@ -145,7 +141,7 @@ class ArtistController extends Controller
         $artist->delete();
         return redirect(route('artist.index'));
     }
-    
+
     /**
      * Store image method
      *
@@ -170,13 +166,13 @@ class ArtistController extends Controller
      */
     protected function search_artists()
     {
-        $artists = Artist::latest()->filter(request(['search']))->get(); 
+        $artists = Artist::latest()->filter(request(['search']))->get();
 
         $renderedArtists = '';
         foreach ($artists as $artist) {
             $renderedArtists .= view('components.artist-card', ['artist' => $artist])->render();
         }
-        
+
         return response()->json(['artists' => $renderedArtists]);
     }
 }
