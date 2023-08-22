@@ -26,11 +26,17 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticationController::class, 'logout'])->name('logout');
 
     Route::middleware(['check.userlevel:super admin'])->group(function () {
+        Route::post('/admin/{admin}/restore', [AdminController::class, 'restore'])->name('admin.restore');
+        Route::get('/admin/restore', [AdminController::class, 'restore_index'])->name('admin.restore.index');
         Route::resource('/admin', AdminController::class);
     });
+    
     Route::middleware(['check.userlevel:super admin,admin'])->group(function () {
+        Route::post('/artist/{artist}/restore', [ArtistController::class, 'restore'])->name('artist.restore');
+        Route::get('/artist/restore', [ArtistController::class, 'restore_index'])->name('artist.restore.index');
         Route::resource('/artist', ArtistController::class);
     });
+    
     Route::resource('/artwork', ArtController::class);
 
     //Route for Artwork's Queries

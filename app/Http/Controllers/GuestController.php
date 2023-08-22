@@ -15,9 +15,9 @@ class GuestController extends Controller
      */
     public function index()
     {
-        // $artworks = Artwork::latest()->filter(request(['category', 'search']))->get();
+        $artworks = Artwork::latest()->filter(request(['category']))->get();
         // dd($artworks);
-        $artworks = Artwork::latest()->get();
+        // $artworks = Artwork::latest()->get();
         $artists = Artist::with('artworks')->get();
         return view('dashboard', ['artworks' => $artworks, 'artists' => $artists]);
     }

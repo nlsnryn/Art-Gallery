@@ -24,7 +24,6 @@ class AdminUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string'],
-            'email' => ['email', 'unique:users'],
             'password' => ['min:6', 'confirmed', Password::defaults()],
         ];
     }

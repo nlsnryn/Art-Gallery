@@ -53,4 +53,15 @@ class Artist extends Model
             });
         }
     }
+
+    public function scopeFilterTrashed($query, array $filters)
+    {
+        if ($filters['search'] ?? false) {
+            $query->onlyTrashed()
+            ->whereHas('user', function ($userQuery) {
+                $userQuery->onlyTrashed()
+                    ->where('name', 'like', '%' . request('search') . '%');
+            });
+        }
+    }
 }

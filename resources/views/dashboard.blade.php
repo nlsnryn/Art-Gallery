@@ -10,7 +10,7 @@
     </form>
 
     <div class="flex lg:flex-row">
-        <div>
+        <div class="mt-24">
             @include('partials.categories')
         </div>
         <main class="text-gray-800 mt-16 lg:mt-0">

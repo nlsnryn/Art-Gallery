@@ -88,6 +88,7 @@ class ArtistController extends Controller
      */
     public function show(Artist $artist)
     {
+        // dd($artist);
         $totalSold = null;
 
         foreach ($artist->artworks as $artwork) {
@@ -104,42 +105,57 @@ class ArtistController extends Controller
      *
      * @param  mixed $request
      * @param  mixed $artist
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function update(ArtistUpdateRequest $request, Artist $artist)
     {
-        $artist->user->update([
-            'name' => $request->name,
-            'password' => $request->password
-        ]);
-
-        $artist->update([
-            'location' => $request->location,
-        ]);
-
-        // Check if the current artist has image if there's then unlink the current image to storage
-        if ($request->file('image')) {
-            if (!empty($artist->image)) {
-                Storage::disk('public')->delete($artist->image);
+        try {
+            $artist->user->update([
+                'name' => $request->name,
+                'password' => $request->password
+            ]);
+    
+            $artist->update([
+                'location' => $request->location,
+            ]);
+    
+            // Check if the current artist has image if there's then unlink the current image to storage
+            if ($request->file('image')) {
+                if (!empty($artist->image)) {
+                    Storage::disk('public')->delete($artist->image);
+                }
+    
+                $this->store_artist_image($request, $artist);
             }
-
-            $this->store_artist_image($request, $artist);
+    
+            // return redirect(route('artist.index'));
+            return response()->json('Successfully Artist updated.');
+        } catch(\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 422);
         }
-
-        return redirect(route('artist.index'));
+        
     }
 
     /**
      * Delete specific artist
      *
      * @param  mixed $artist
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function destroy(Artist $artist)
     {
+        if ($artist->artworks->count()) 
+        {
+            foreach ($artist->artworks as $artwork)
+            {
+                $artwork->delete();
+            }
+        }
+        
         $artist->user->delete();
         $artist->delete();
-        return redirect(route('artist.index'));
+        // return redirect(route('artist.index'));
+        return response()->json('Delete Artist Successfully');
     }
 
     /**
@@ -164,7 +180,7 @@ class ArtistController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function search_artists()
+    public function search_artists()
     {
         $artists = Artist::latest()->filter(request(['search']))->get();
 
@@ -174,5 +190,36 @@ class ArtistController extends Controller
         }
 
         return response()->json(['artists' => $renderedArtists]);
+    }
+    
+    /**
+     * Display all restorable artist deleted
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function restore_index()
+    {
+        $restorableArtists = Artist::with(['user' => function ($query) {
+            $query->onlyTrashed();
+        }])->onlyTrashed()->get();
+
+        // dd($restorableArtists);
+        return view('artist.restore', ['artists' => $restorableArtists]);
+    }
+
+    /**
+     * Restore the artist
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($artist)
+    {
+        $artist = Artist::with(['user' => function ($query) {
+            $query->onlyTrashed();
+        }])->onlyTrashed()->find($artist);
+
+        $artist->user->restore();
+        $artist->restore();
+        return redirect(route('artist.restore.index'));
     }
 }

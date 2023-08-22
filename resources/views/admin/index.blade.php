@@ -1,11 +1,12 @@
 <x-layout>    
     <main class="max-w-screen-2xl mx-auto p-10">
         <div class="text-zinc-900 py-10 text-center">
-            <h1 class="sm:text-4xl text-2xl font-medium uppercase tracking-wide">Admin management</h1>
             <div class="space-y-2 sm:space-y-0 sm:space-x-2 mt-5 flex flex-col sm:flex-row justify-center items-center">
                 <a href="{{ route('admin.index') }}" class="text-xl font-medium uppercase border-2 border-zinc-900 px-4 py-1 rounded-md cursor-pointer hover:bg-red-500 hover:text-gray-100 hover:border-red-500 tracking-tighter transition-all ease-in-out duration-150">Manage Admin</a>
                 <a href="{{ route('artist.index') }}" class="text-xl font-medium uppercase border-2 border-zinc-900 px-4 py-1 rounded-md cursor-pointer hover:bg-red-500 hover:text-gray-100 hover:border-red-500 tracking-tighter transition-all ease-in-out duration-150">Manage Artist</a>
             </div>
+
+            <h1 class="sm:text-4xl text-2xl font-medium uppercase tracking-tighter mt-10">Admin management</h1>
         </div>
 
         <form id="auth-search-admin" action="" class="pb-8 bg-transparent px-0 sm:px-10">
@@ -15,6 +16,9 @@
         <div class="text-zinc-900">
             <div class="flex justify-end mb-5">
                 <a href="{{ route('admin.create') }}" class="bg-zinc-900 text-white text-xs sm:text-base px-4 py-2 rounded hover:bg-zinc-800">Create Admin Account</a>
+                <a href="{{ route('admin.restore.index') }}" class="bg-red-600 text-white ml-2 px-3 py-1 rounded">
+                    <i class="fa-solid fa-trash text-lg mt-1.5"></i>
+                </a>
             </div>
 
             <div class="overflow-x-auto overflow-hidden">
@@ -63,7 +67,7 @@
                 </div>
 
                 @unless ($admins->count())
-                <h1 class="text-center text-zinc-900 font-medium text-5xl mt-20 uppercase tracking-tighter">No Admin Account Record yet.</h1>
+                <h1 id="no-admin" class="text-center text-zinc-900 font-medium text-5xl mt-20 uppercase tracking-tighter">No Admin Account Record yet.</h1>
                 @endunless
             </div>
         </div>
@@ -106,6 +110,7 @@
                             `);
                         } else {
                             $('tbody').empty();
+                            $('#no-admin').empty();
                             $('#no-fetch').empty().append('<h1 class="text-center font-medium text-3xl mt-5">No Admin Record found.</h1>');
                             $('#search-input').val('');
                             $('thead').empty();

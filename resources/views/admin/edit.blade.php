@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form method="POST" action="{{ route('admin.update', $admin->id) }}">
+                <form id="update-admin" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="mb-6">
@@ -22,9 +22,12 @@
                             value="{{ $admin->name }}"
                         />
 
-                        @error('name')
+                        <div id="error-name">
+                        </div>
+
+                        {{-- @error('name')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -37,10 +40,13 @@
                             name="email"
                             value="{{ $admin->email }}"
                         />
+
+                        <div id="error-email">
+                        </div>
                         
-                        @error('email')
+                        {{-- @error('email')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -57,9 +63,12 @@
                             value="{{ $admin->password }}"
                         />
 
-                        @error('password')
+                        <div id="error-password">
+                        </div>
+
+                        {{-- @error('password')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-10">
@@ -76,9 +85,9 @@
                             value="{{ $admin->password }}"
                         />
 
-                        @error('password_confirmation')
+                        {{-- @error('password_confirmation')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div>
@@ -88,7 +97,7 @@
                         >
                             Update
                         </button>
-                        <a href="{{ URL::previous() }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
+                        <a href="{{ route('admin.index') }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
                             Back
                         </a>
                     </div>
@@ -96,4 +105,43 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#update-admin').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                updateAdmin(formData);
+            });
+
+            function updateAdmin(formData) {
+                formData.append('_method', 'PUT');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('admin.update', $admin->id) }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        window.location.href = "{{ route('admin.index') }}";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>

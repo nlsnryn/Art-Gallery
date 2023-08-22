@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form method="POST" action="{{ route('admin.index') }}">
+                <form id="store-admin" method="POST">
                     @csrf
                     <div class="mb-6">
                         <label for="name" class="inline-block text-lg mb-2">
@@ -21,9 +21,12 @@
                             value="{{ old('name') }}"
                         />
 
-                        @error('name')
+                        <div id="error-name">
+                        </div>
+
+                        {{-- @error('name')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -36,10 +39,12 @@
                             name="email"
                             value="{{ old('email') }}"
                         />
-                        
-                        @error('email')
+
+                        <div id="error-email">
+                        </div>
+                        {{-- @error('email')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -56,9 +61,12 @@
                             value="{{ old('password') }}"
                         />
 
-                        @error('password')
+                        <div id="error-password">
+                        </div>
+
+                        {{-- @error('password')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-10">
@@ -74,10 +82,6 @@
                             name="password_confirmation"
                             value="{{ old('password_confirmation') }}"
                         />
-
-                        @error('password_confirmation')
-                            <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
                     </div>
 
                     <div>
@@ -87,7 +91,7 @@
                         >
                             Save
                         </button>
-                        <a href="{{ URL::previous() }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
+                        <a href="{{ route('admin.index') }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
                             Back
                         </a>
                     </div>
@@ -95,4 +99,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#store-admin').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                storeAdmin(formData);
+            });
+
+            function storeAdmin(formData) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('admin.store') }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        window.location.href = "{{ route('admin.index') }}";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>

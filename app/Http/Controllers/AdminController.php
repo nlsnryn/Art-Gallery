@@ -90,7 +90,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function search_admins()
+    public function search_admins()
     {
         $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
 
@@ -100,5 +100,29 @@ class AdminController extends Controller
         }
 
         return response()->json(['admins' => $renderedAdmins]);
+    }
+    
+    /**
+     * Display all restorable admin deleted
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function restore_index()
+    {
+        $restorableAdmins = User::onlyTrashed()->where('user_level', 'admin')->get();
+
+        return view('admin.restore', ['admins' => $restorableAdmins]);
+    }
+    
+    /**
+     * Restore the admin
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($admin)
+    {
+        $admin = User::withTrashed()->find($admin);
+        $admin->restore();
+        return redirect(route('admin.restore.index'));
     }
 }

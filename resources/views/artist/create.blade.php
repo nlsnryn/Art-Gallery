@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form id="store-artist" method="POST" action="" enctype="multipart/form-data">
+                <form id="store-artist" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-6">
                         <label for="name" class="inline-block text-lg mb-2">

@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form method="POST" action="{{ route('artist.update', $artist->id) }}" enctype="multipart/form-data">
+                <form id="update-artist" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="mb-6">
@@ -22,9 +22,12 @@
                             value="{{ $artist->user->name }}"
                         />
 
-                        @error('name')
+                        <div id="error-name">
+                        </div>
+
+                        {{-- @error('name')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -38,10 +41,13 @@
                             disabled
                             value="{{ $artist->user->email }}"
                         />
+
+                        <div id="error-email">
+                        </div>
                         
-                        @error('email')
+                        {{-- @error('email')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -59,9 +65,12 @@
                             placeholder="*********"
                         />
 
-                        @error('password')
+                        <div id="error-password">
+                        </div>
+
+                        {{-- @error('password')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -79,9 +88,9 @@
                             placeholder="*********"
                         />
 
-                        @error('password_confirmation')
+                        {{-- @error('password_confirmation')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -98,9 +107,12 @@
                             value="{{ $artist->location }}"
                         />
 
-                        @error('location')
+                        <div id="error-location">
+                        </div>
+
+                        {{-- @error('location')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-3">
@@ -116,9 +128,12 @@
                             name="image"
                         />
 
-                        @error('image')
+                        <div id="error-image">
+                        </div>
+
+                        {{-- @error('image')
                             <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-10">
@@ -134,7 +149,7 @@
                         </button>
                     </div>
                 </form>
-                <form method="POST" action="{{ route('artist.destroy', $artist->id) }}" >
+                <form id="delete-artist" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="bg-red-700 text-white py-1 sm:py-2 px-2 sm:px-5 rounded hover:bg-red-600">Delete Account</button>
@@ -146,4 +161,71 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#update-artist').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                updateArtist(formData);
+            });
+
+            $('#delete-artist').submit(function(event) {
+                event.preventDefault();
+
+                deleteArtist();
+            })
+
+            function updateArtist(formData) {
+                formData.append('_method', 'PUT');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('artist.update', $artist->id) }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                        window.location.href = "{{ route('artist.index') }}";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+
+            function deleteArtist() 
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('artist.destroy', $artist->id) }}",
+                    dataType: "json",
+                    data: {
+                        _method: "DELETE",
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        window.location.href = "{{ route('artist.index') }}";
+                    },
+                    error: function (xhr, status, error) {
+
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+                    }
+                })
+            }
+        });
+    </script>
 </x-layout>

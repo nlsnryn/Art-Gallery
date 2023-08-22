@@ -8,9 +8,12 @@
             <x-search :placeholder="'Artist Name'"/>
         </form>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end space-x-2">
             <a href="{{ route('artist.create') }}" class="bg-zinc-900 text-white rounded px-5 py-2 font-semibold uppercase text-sm tracking-wide hover:bg-zinc-800">
                 Add Artist
+            </a>
+            <a href="{{ route('artist.restore.index') }}" class="bg-red-600 text-white px-3 py-1 rounded">
+                <i class="fa-solid fa-trash text-lg mt-1"></i>
             </a>
         </div>
 

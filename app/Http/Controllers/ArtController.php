@@ -20,11 +20,15 @@ class ArtController extends Controller
     */
    public function index(Request $request)
    {
-      if (auth()->user()->user_level == 'artist') {
+      if (auth()->user()->user_level == 'artist') 
+      {
          $user = auth()->user();
          $artworks = Artwork::where('artist_id', $user->artist->id)->latest()->filter(request(['category', 'search']))->get();
          return view('artwork.index', ['artworks' => $artworks]);
-      } else {
+      } 
+      else 
+      {
+         // dd($request->query('artist'));
          return redirect()->route('artist.show', ['artist' => $request->query('artist')]);
       }
    }
@@ -51,9 +55,12 @@ class ArtController extends Controller
          $artistId = '';
 
          // Check which artistId will store to variable auth id or query
-         if (auth()->user()->user_level == 'artist') {
+         if (auth()->user()->user_level == 'artist') 
+         {
             $artistId = auth()->user()->artist->id;
-         } else {
+         } 
+         else 
+         {
             $artistId = $request->query('artist_id');
          }
 
@@ -140,8 +147,17 @@ class ArtController extends Controller
     */
    public function destroy(Artwork $artwork)
    {
+      $artistId = $artwork->artist->id;
+      // dd($artistId);
       $artwork->delete();
-      return redirect(route('artwork.index'));
+      if (auth()->user()->user_level == 'artist')
+      {
+         return redirect(route('artwork.index'));
+      }
+      else
+      {
+         return redirect(route('artwork.index', ['artist' => $artistId]));
+      }
    }
 
    /**
@@ -151,7 +167,7 @@ class ArtController extends Controller
     * @param  mixed $artwork
     * @return void
     */
-   protected function store_image($request, $artwork)
+   public function store_image($request, $artwork)
    {
       $ext = $request->file('image')->extension();
       $contents = file_get_contents($request->file('image'));

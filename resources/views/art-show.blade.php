@@ -14,9 +14,9 @@
                 <h4 class="uppercase font-medium text-sm tracking-wide mt-1">Price: ₱{{ number_format($artwork->price, 2) }}</h4>
 
                 <div class="artist-info mt-5">
-                    <h1 class="font-medium text-xl uppercase tracking-tight">{{ $artwork->artist->user->name }}</h1>
-                    <h4 class="uppercase font-medium text-sm tracking-wide mt-1">{{ $artwork->artist->location }}</h4> 
-                    <h4 class="uppercase font-medium text-sm tracking-wide mt-1">Member since: {{ $artwork->artist->created_at->format('F d Y') }}</h4> 
+                    <h1 class="font-medium text-xl uppercase tracking-tight">{{ $artwork?->artist?->user?->name }}</h1>
+                    <h4 class="uppercase font-medium text-sm tracking-wide mt-1">{{ $artwork?->artist?->location }}</h4> 
+                    <h4 class="uppercase font-medium text-sm tracking-wide mt-1">Member since: {{ $artwork?->artist?->created_at->format('F d Y') }}</h4> 
                 </div>
 
                 @include('partials.query-form')
