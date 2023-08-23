@@ -140,29 +140,8 @@
                     url: form.attr('action'),
                     data: form.serialize(),
                     success: function(response) {
-                        if(response.admins.length > 0) {
-                            $('#no-fetch').empty();
-                            $('tbody').empty().append(response.admins);
-                            $('thead').empty().append(`
-                                <tr>
-                                    <th scope="col" class="px-6 py-3">
-                                        Name
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Email
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Action
-                                    </th>
-                                </tr>
-                            `);
-                        } else {
-                            $('tbody').empty();
-                            $('#no-admin').empty();
-                            $('#no-fetch').empty().append('<h1 class="text-center font-medium text-3xl mt-5">No Admin Record found.</h1>');
-                            $('#search-input').val('');
-                            $('thead').empty();
-                        }
+                        console.log(response.message);
+                        window.location.href = "{{ route('admin.index') }}";
                     },
                     error: function(xhr, status, error) {
                         console.log("AJAX Error:", error);

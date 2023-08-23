@@ -78,18 +78,8 @@ class AdminController extends Controller
      */
     public function destroy(User $admin)
     {
-        // Delete Admin
         $admin->delete();
-
-        // New Fetch Admin Data
-        $admins = User::where('user_level', UserLevel::ADMIN)->latest()->get();
-        $rendered_admins = '';
-        foreach ($admins as $new_admin)
-        {
-            $rendered_admins .= view('partials.admin-data', ['admin' => $new_admin])->render();
-        }
-
-        return response()->json(['admins' => $rendered_admins]);
+        return response()->json(['message' => 'Admin Successfully Deleted.']);
         // return redirect(route('admin.index'));
     }
 
@@ -100,7 +90,7 @@ class AdminController extends Controller
      */
     public function search_admins()
     {
-        $admins = User::where('user_level', UserLevel::ADMIN)->latest()->filter(request(['search']))->get();
+        $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
 
         $rendered_admins = '';
         foreach ($admins as $admin) {
