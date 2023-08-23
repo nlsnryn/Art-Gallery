@@ -16,8 +16,6 @@ class GuestController extends Controller
     public function index()
     {
         $artworks = Artwork::latest()->filter(request(['category']))->get();
-        // dd($artworks);
-        // $artworks = Artwork::latest()->get();
         $artists = Artist::with('artworks')->get();
         return view('dashboard', ['artworks' => $artworks, 'artists' => $artists]);
     }
@@ -52,14 +50,11 @@ class GuestController extends Controller
     protected function search_artworks()
     {
         $artworks = Artwork::with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get();
-        // \Log::error($artworkTemplate);
-        // return response()->json(['artworks' => $artworks]);
-
-        $renderedArtworks = '';
+        $rendered_artworks = '';
         foreach ($artworks as $artwork) {
-            $renderedArtworks .= view('components.art-card', ['artwork' => $artwork])->render();
+            $rendered_artworks .= view('components.art-card', ['artwork' => $artwork])->render();
         }
 
-        return response()->json(['artworks' => $renderedArtworks]);
+        return response()->json(['artworks' => $rendered_artworks]);
     }
 }

@@ -38,7 +38,7 @@ class ArtistController extends Controller
      * Store an artist record
      *
      * @param  mixed $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function store(RegisterRequest $request)
     {
@@ -60,11 +60,9 @@ class ArtistController extends Controller
                 $this->store_artist_image($request, $artist);
             }
 
-            return redirect(route('artist.index'));
-            // return response()->json('Saved successfully');
+            return response()->json('Saved successfully');
+            // return redirect(route('artist.index'));
         } catch (\Exception $e) {
-            // $errorMessage = $e->getMessage();
-            // return back()->withErrors(['error' => $errorMessage]);
             return response()->json(['errors' => $e->getMessage()], 422);
         }
     }
@@ -88,16 +86,14 @@ class ArtistController extends Controller
      */
     public function show(Artist $artist)
     {
-        // dd($artist);
-        $totalSold = null;
-
+        $total_sold = null;
         foreach ($artist->artworks as $artwork) {
             if ($artwork->sold) {
-                $totalSold += 1;
+                $total_sold += 1;
             }
         }
 
-        return view('artist.show', ['artist' => $artist, 'sold' => $totalSold]);
+        return view('artist.show', ['artist' => $artist, 'sold' => $total_sold]);
     }
 
     /**
@@ -128,8 +124,8 @@ class ArtistController extends Controller
                 $this->store_artist_image($request, $artist);
             }
     
-            // return redirect(route('artist.index'));
             return response()->json('Successfully Artist updated.');
+            // return redirect(route('artist.index'));
         } catch(\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 422);
         }
@@ -154,8 +150,8 @@ class ArtistController extends Controller
         
         $artist->user->delete();
         $artist->delete();
-        // return redirect(route('artist.index'));
         return response()->json('Delete Artist Successfully');
+        // return redirect(route('artist.index'));
     }
 
     /**
@@ -184,12 +180,12 @@ class ArtistController extends Controller
     {
         $artists = Artist::latest()->filter(request(['search']))->get();
 
-        $renderedArtists = '';
+        $rendered_artists = '';
         foreach ($artists as $artist) {
-            $renderedArtists .= view('components.artist-card', ['artist' => $artist])->render();
+            $rendered_artists .= view('components.artist-card', ['artist' => $artist])->render();
         }
 
-        return response()->json(['artists' => $renderedArtists]);
+        return response()->json(['artists' => $rendered_artists]);
     }
     
     /**
@@ -199,12 +195,12 @@ class ArtistController extends Controller
      */
     public function restore_index()
     {
-        $restorableArtists = Artist::with(['user' => function ($query) {
+        $restorable_artists = Artist::with(['user' => function ($query) {
             $query->onlyTrashed();
         }])->onlyTrashed()->get();
 
         // dd($restorableArtists);
-        return view('artist.restore', ['artists' => $restorableArtists]);
+        return view('artist.restore', ['artists' => $restorable_artists]);
     }
 
     /**
@@ -212,12 +208,24 @@ class ArtistController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function restore($artist)
+    public function restore($id)
     {
         $artist = Artist::with(['user' => function ($query) {
             $query->onlyTrashed();
-        }])->onlyTrashed()->find($artist);
+        }])->onlyTrashed()->find($id);
 
+        $artist_artworks = Artist::with(['artworks' => function ($query) {
+            $query->onlyTrashed();
+        }])->onlyTrashed()->find($id);
+
+        if ($artist_artworks)
+        {
+            foreach ($artist_artworks->artworks as $artwork) 
+            {
+                $artwork->restore();
+            }
+        }
+        
         $artist->user->restore();
         $artist->restore();
         return redirect(route('artist.restore.index'));

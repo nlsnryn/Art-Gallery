@@ -10,7 +10,7 @@
     </form>
 
     <div class="flex lg:flex-row">
-        <div class="mt-24">
+        <div class="mt-1 lg:mt-24">
             @include('partials.categories')
         </div>
         <main class="text-gray-800 mt-16 lg:mt-0">
@@ -36,7 +36,7 @@
                 <div id="no-fetch" class="">
                 </div>
                 @if (!$artworks->count())
-                    <h1 class="text-center font-medium text-3xl mt-5">No Artwork Record yet.</h1>
+                    <h1 class="text-center font-medium text-3xl mt-5 uppercase tracking-tighter">No Artwork Record yet.</h1>
                 @endif
             </div>
 
@@ -53,24 +53,36 @@
                     @endforeach
                 </div>
 
-                @if (!$artists->count())
-                <h1 class="text-center font-medium text-3xl mt-5">No Artist Record yet.</h1>
+                @if (!$artists->count() && !$artworks->count())
+                <h1 class="text-center font-medium text-3xl mt-5 uppercase tracking-tighter -ml-10">No Artist Record yet.</h1>
                 @endif
             </div>
         </main>
     </div>
     <script>
         //Dashboard Categories
-        document.getElementById('category-hamburger').addEventListener('click', function () {
-            document.getElementById('category-menu').classList.toggle('hidden');
-            document.getElementById('category-ekis').classList.toggle('hidden');
-            document.getElementById('category-hamburger').classList.toggle('hidden');
+        // document.getElementById('category-hamburger').addEventListener('click', function () {
+        //     document.getElementById('category-menu').classList.toggle('hidden');
+        //     document.getElementById('category-ekis').classList.toggle('hidden');
+        //     document.getElementById('category-hamburger').classList.toggle('hidden');
+        // });
+
+        // document.getElementById('category-ekis').addEventListener('click', function () {
+        //     document.getElementById('category-menu').classList.toggle('hidden');
+        //     document.getElementById('category-ekis').classList.toggle('hidden');
+        //     document.getElementById('category-hamburger').classList.toggle('hidden');
+        // });
+
+        $('#category-hamburger').on('click', function () {
+            $('#category-menu').toggleClass('hidden');
+            $('#category-ekis').toggleClass('hidden');
+            $(this).toggleClass('hidden');
         });
 
-        document.getElementById('category-ekis').addEventListener('click', function () {
-            document.getElementById('category-menu').classList.toggle('hidden');
-            document.getElementById('category-ekis').classList.toggle('hidden');
-            document.getElementById('category-hamburger').classList.toggle('hidden');
+        $('#category-ekis').on('click', function () {
+            $('#category-menu').toggleClass('hidden');
+            $(this).toggleClass('hidden');
+            $('#category-hamburger').toggleClass('hidden');
         });
 
         $(document).ready(function () {

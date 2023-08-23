@@ -55,8 +55,6 @@ class QueryController extends Controller
         
         QueryStatusJob::dispatch($query, $artwork);
         $query->delete();
-        // $trash = Query::withTrashed()->get();
-        // dd($trash);
         return redirect()->route('artwork.show', $artwork->id);
     }
     
@@ -82,7 +80,7 @@ class QueryController extends Controller
         $trashed_queries = Query::onlyTrashed()
                         ->where('artwork_id', $artwork->id)
                         ->get();
-        // dd($trashed_queries);
+
         return view('query.history', ['queries' => $trashed_queries, 'artwork' => $artwork]);
     }
 }

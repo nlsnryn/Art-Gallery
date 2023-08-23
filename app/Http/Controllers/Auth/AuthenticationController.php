@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Authentication\LoginRequest;
+
+use function Laravel\Prompts\error;
 
 class AuthenticationController extends Controller
 {    
@@ -23,23 +26,31 @@ class AuthenticationController extends Controller
      * Log in the user
      *
      * @param  mixed $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse||\Illuminate\Http\JsonResponse
      */
     public function login(LoginRequest $request)
     {
-        if(auth()->attempt($request->only('email', 'password')))
-        {
-            $request->session()->regenerate();
+        try {
+            $credentials = $request->only('email', 'password');
+            
+            if(Auth::attempt($credentials))
+            {
+                $request->session()->regenerate();
+                $user = User::where('email', $request->email)->firstOrFail();
 
-            $user = User::where('email', $request->email)->firstOrFail();
-
-            $redirect_route = ($user->user_level == 'super admin') ? 'admin.index' : ($user->user_level == 'admin' ? 'artist.index' : 'artwork.index');
-            return redirect(route($redirect_route));
-        } 
-        else 
-        {
-            return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
+                return response()->json(['user' => $user]);
+                // $redirect_route = ($user->user_level == 'super admin') ? 'admin.index' : ($user->user_level == 'admin' ? 'artist.index' : 'artwork.index');
+                // return redirect(route($redirect_route));
+            } 
+            else 
+            {
+                // return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
+                return response()->json(['message' => 'Invalid Credentials']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid Credentials']);
         }
+        
     }
     
     /**

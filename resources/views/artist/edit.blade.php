@@ -220,7 +220,6 @@
                         window.location.href = "{{ route('artist.index') }}";
                     },
                     error: function (xhr, status, error) {
-
                         console.log("AJAX Error:", error);
                         console.log(xhr.responseText);
                     }

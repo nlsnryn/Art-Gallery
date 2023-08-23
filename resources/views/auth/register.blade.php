@@ -9,7 +9,7 @@
                     <p class="mb-4">Create an account</p>
                 </header>
 
-                <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+                <form id="register" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-6">
                         <label for="name" class="inline-block text-lg mb-2">
@@ -22,9 +22,12 @@
                             value="{{ old('name') }}"
                         />
 
-                        @error('name')
+                        <div id="error-name">
+                        </div>
+
+                        {{-- @error('name')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -37,10 +40,13 @@
                             name="email"
                             value="{{ old('email') }}"
                         />
+
+                        <div id="error-email">
+                        </div>
                         
-                        @error('email')
+                        {{-- @error('email')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -57,9 +63,12 @@
                             value="{{ old('password') }}"
                         />
 
-                        @error('password')
+                        <div id="error-password">
+                        </div>
+
+                        {{-- @error('password')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -76,9 +85,12 @@
                             value="{{ old('password_confirmation') }}"
                         />
 
-                        @error('password_confirmation')
+                        <div id="error-password_confirmation">
+                        </div>
+
+                        {{-- @error('password_confirmation')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -95,9 +107,12 @@
                             value="{{ old('location') }}"
                         />
 
-                        @error('location')
+                        <div id="error-location">
+                        </div>
+
+                        {{-- @error('location')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-10">
@@ -114,9 +129,12 @@
                             value="{{ old('image') }}"
                         />
 
-                        @error('image')
+                        <div id="error-image">
+                        </div>
+
+                        {{-- @error('image')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -140,4 +158,45 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#register').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                authRegister(formData);
+            });
+
+            function authRegister(formData) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('register') }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+
+                        var routeNames = {
+                            artwork: "{{ route('artwork.index') }}"
+                        };
+
+                        window.location.href = routeNames.artwork;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>

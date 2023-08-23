@@ -8,9 +8,8 @@
                 <p class="mb-4">Update an artwork</p>
             </header>
 
-            <form method="POST" action="{{ route('artwork.update', $artwork->id) }}" enctype="multipart/form-data">
+            <form id="update-artwork" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
                 <div class="mb-4">
                     <label for="title" class="inline-block text-lg mb-2">
                         Title
@@ -22,9 +21,12 @@
                         value="{{ $artwork->title }}"
                     />
 
-                    @error('title')
+                    <div id="error-title">
+                    </div>
+
+                    {{-- @error('title')
                         <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                    @enderror
+                    @enderror --}}
                 </div>
 
                 <div class="mb-4">
@@ -37,9 +39,12 @@
                         rows="3"
                     >{{ $artwork->description }}</textarea>
                     
-                    @error('description')
+                    <div id="error-description">
+                    </div>
+
+                    {{-- @error('description')
                         <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                    @enderror
+                    @enderror --}}
                 </div>
 
                 <div class="mb-4">
@@ -56,9 +61,12 @@
                         value="{{ $artwork->price }}"
                     />
 
-                    @error('price')
+                    <div id="error-price">
+                    </div>
+
+                    {{-- @error('price')
                         <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                    @enderror
+                    @enderror --}}
                 </div>
 
                 <div class="mb-4">
@@ -76,9 +84,12 @@
                         <option value="sculptures" class="uppercase font-medium text-sm tracking-wide">Sculptures</option>
                     </select>
 
-                    @error('category')
+                    <div id="error-category">
+                    </div>
+
+                    {{-- @error('category')
                         <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                    @enderror
+                    @enderror --}}
                 </div>
 
                 <div class="mb-3">
@@ -94,9 +105,12 @@
                         name="image"
                     />
 
-                    @error('image')
+                    <div id="error-image">
+                    </div>
+
+                    {{-- @error('image')
                         <p class="text-red-500 mt-1 text-xs">{{$message}}</p>
-                    @enderror
+                    @enderror --}}
                 </div>
 
                 <div class="mb-10">
@@ -115,7 +129,7 @@
                 <div class="mt-8">
                     <p>
                         Change of mind?
-                        <a href="{{ URL::previous() }}" class="text-zinc-900 font-semibold"
+                        <a href="{{ route('artwork.show', $artwork->id) }}" class="text-zinc-900 font-semibold"
                             >Back</a
                         >
                    </p>
@@ -123,4 +137,48 @@
             </form>
         </div>
     </main>
+
+    <script>
+        $(document).ready(function () {
+            $('#update-artwork').submit(function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData($(this)[0]);
+                updateArtwork(formData);
+            });
+
+            var authArtist = "{{ auth()->user()->user_level == 'artist' ? 'true' : 'false' }}"
+
+            function updateArtwork(formData) {
+                formData.append('_method', 'PUT');
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('artwork.update', $artwork->id) }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                    console.log(response.message)
+                    console.log(authArtist == 'true');
+                   
+                    window.location.href = "{{ route('artwork.show', $artwork->id) }}";
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>

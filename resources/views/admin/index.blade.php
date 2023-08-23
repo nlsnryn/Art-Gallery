@@ -51,7 +51,7 @@
                                 </td>
                                 <td class="px-6 py-4 flex gap-2">
                                     <a href="{{ route('admin.edit', $admin->id) }}" class="bg-zinc-900 text-sm px-4 py-1 rounded text-white">Edit</a>
-                                    <form method="POST" action="{{ route('admin.destroy', $admin->id) }}">
+                                    <form id="delete-admin" method="POST" action="{{ route('admin.destroy', $admin->id) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="bg-red-700 text-sm px-4 py-1 rounded text-white">Delete</button>
@@ -117,6 +117,33 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+
+            // Delete Admin
+
+            $('body').on('submit', '#delete-admin', function(event) {
+                event.preventDefault();
+                var form = $(this);
+
+                if (confirm('Are you sure you want to delete this admin?')) {
+                    deleteAdmin(form);
+                }
+            });
+
+            function deleteAdmin(form) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        console.log(response.message);
+                        window.location.href = "{{ route('admin.index') }}";
+                    },
+                    error: function(xhr, status, error) {
                         console.log("AJAX Error:", error);
                         console.log(xhr.responseText);
                     }

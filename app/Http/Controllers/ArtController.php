@@ -28,7 +28,6 @@ class ArtController extends Controller
       } 
       else 
       {
-         // dd($request->query('artist'));
          return redirect()->route('artist.show', ['artist' => $request->query('artist')]);
       }
    }
@@ -47,25 +46,25 @@ class ArtController extends Controller
     * Store artwork data from create from into artworks table
     *
     * @param  mixed $request
-    * @return \Illuminate\Http\RedirectResponse
+    * @return \Illuminate\Http\RedirectResponse||\Illuminate\Http\JsonResponse
     */
    public function store(ArtworkStoreRequest $request)
    {
       try {
-         $artistId = '';
+         $artist_id = '';
 
-         // Check which artistId will store to variable auth id or query
+         // Check which artist_id will store to variable auth id or query
          if (auth()->user()->user_level == 'artist') 
          {
-            $artistId = auth()->user()->artist->id;
+            $artist_id = auth()->user()->artist->id;
          } 
          else 
          {
-            $artistId = $request->query('artist_id');
+            $artist_id = $request->query('artist_id');
          }
 
          $artwork = Artwork::create([
-            'artist_id' => $artistId,
+            'artist_id' => $artist_id,
             'title' => $request->title,
             'price' => $request->price,
             'category' => $request->category,
@@ -77,14 +76,15 @@ class ArtController extends Controller
             $this->store_image($request, $artwork);
          }
 
-         if (auth()->user()->user_level == 'artist') {
-            return redirect(route('artwork.index'));
-         } else {
-            return redirect(route('artwork.index', ['artist' => $artistId]));
-         }
+         return response()->json(['message' => 'Artwork saved.']);
+         // if (auth()->user()->user_level == 'artist') {
+         //    return redirect(route('artwork.index'));
+         // } else {
+         //    return redirect(route('artwork.index', ['artist' => $artist_id]));
+         // }
       } catch (\Exception $e) {
-         $errorMessage = $e->getMessage();
-         return back()->withErrors(['error' => $errorMessage]);
+         $error_message = $e->getMessage();
+         return back()->withErrors(['error' => $error_message]);
       }
    }
 
@@ -115,7 +115,7 @@ class ArtController extends Controller
     *
     * @param  mixed $request
     * @param  mixed $artwork
-    * @return \Illuminate\Http\RedirectResponse
+    * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     */
    public function update(ArtworkUpdateRequest $request, Artwork $artwork)
    {
@@ -123,7 +123,8 @@ class ArtController extends Controller
          $artwork->update($request->except('image'));
 
          // Updating image if there's an image request 
-         if ($request->file('image')) {
+         if ($request->file('image')) 
+         {
             // Check if the current artwork has image if there's then unlink the current image to storage
             if (!empty($artwork->image)) {
                Storage::disk('public')->delete($artwork->image);
@@ -132,10 +133,11 @@ class ArtController extends Controller
             $this->store_image($request, $artwork);
          }
 
-         return redirect(route('artwork.show', $artwork->id));
+         return response()->json(['message' => 'Update Successfully']);
+         // return redirect(route('artwork.show', $artwork->id));
       } catch (\Exception $e) {
-         $errorMessage = $e->getMessage();
-         return back()->withErrors(['error' => $errorMessage]);
+         $error_message = $e->getMessage();
+         return back()->withErrors(['error' => $error_message]);
       }
    }
 
@@ -143,21 +145,21 @@ class ArtController extends Controller
     * Delete artwork
     *
     * @param  mixed $artwork
-    * @return \Illuminate\Http\RedirectResponse
+    * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     */
    public function destroy(Artwork $artwork)
    {
-      $artistId = $artwork->artist->id;
-      // dd($artistId);
       $artwork->delete();
-      if (auth()->user()->user_level == 'artist')
-      {
-         return redirect(route('artwork.index'));
-      }
-      else
-      {
-         return redirect(route('artwork.index', ['artist' => $artistId]));
-      }
+      return response()->json(['message' => 'Artwork Deleted']);
+      // $artistId = $artwork->artist->id;
+      // if (auth()->user()->user_level == 'artist')
+      // {
+      //    return redirect(route('artwork.index'));
+      // }
+      // else
+      // {
+      //    return redirect(route('artwork.index', ['artist' => $artistId]));
+      // }
    }
 
    /**
@@ -187,11 +189,11 @@ class ArtController extends Controller
    {
       $artworks = Artwork::where('artist_id', auth()->user()->artist->id)->with('artist.user')->withCount('queries')->latest()->filter(request(['category', 'search']))->get();
 
-      $renderedArtworks = '';
+      $rendered_artworks = '';
       foreach ($artworks as $artwork) {
-         $renderedArtworks .= view('components.art-card', ['artwork' => $artwork])->render();
+         $rendered_artworks .= view('components.art-card', ['artwork' => $artwork])->render();
       }
 
-      return response()->json(['artworks' => $renderedArtworks]);
+      return response()->json(['artworks' => $rendered_artworks]);
    }
 }

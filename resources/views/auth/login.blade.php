@@ -8,7 +8,7 @@
                     </h2>
                 </header>
 
-                <form method="POST" action="{{ route('login') }}">
+                <form id="login" method="POST">
                     @csrf
                     <div class="mb-6">
                         <label for="email" class="inline-block text-lg mb-2"
@@ -21,9 +21,13 @@
                             value="{{ old('email') }}"
                         />
                         
-                        @error('email')
+                        <div id="error-email">
+                        </div>
+
+
+                        {{-- @error('email')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -39,10 +43,13 @@
                             name="password"
                             value="{{ old('password') }}"
                         />
+
+                        <div id="error-password">
+                        </div>
                     
-                        @error('password')
+                        {{-- @error('password')
                             <p class="text-red-500 mt-1 text-sm">{{$message}}</p>
-                        @enderror
+                        @enderror --}}
                     </div>
 
                     <div class="mb-6">
@@ -65,5 +72,56 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#login').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+                authentication(formData);
+            });
+
+            function authentication(formData) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('login') }}",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response.user)
+
+                        if (response.user) {
+                            var routeNames = {
+                                admin: "{{ route('admin.index') }}",
+                                artist: "{{ route('artist.index') }}",
+                                artwork: "{{ route('artwork.index') }}"
+                            };
+
+                            var redirectRoute = response.user.user_level == 'super admin' ? routeNames.admin : (response.user.user_level == 'admin' ? routeNames.artist : routeNames.artwork);
+
+                            window.location.href = redirectRoute;
+                            return
+                        }
+
+                        
+                    },
+                    error: function (xhr, status, error, response) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+                        
+                        var responseErrors = JSON.parse(xhr.responseText);
+
+                        // Loop through the validation errors and display them
+                        $.each(responseErrors.errors, function (key, value) {
+                            $('#error-' + key).empty();
+                            $('#error-' + key).append('<p class="error text-red-500 mt-1 text-sm">' + value + '</p>');
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </x-layout>
 

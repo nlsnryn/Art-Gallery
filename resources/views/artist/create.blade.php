@@ -138,7 +138,7 @@
                         >
                             Register
                         </button>
-                        <a href="{{ URL::previous() }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
+                        <a href="{{ route('artist.index') }}" class="bg-laravel text-white bg-zinc-500 rounded py-2.5 px-6 hover:bg-black">
                             Back
                         </a>
                     </div>

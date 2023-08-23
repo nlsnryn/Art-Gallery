@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::middleware(['check.userlevel:super admin,admin'])->group(function () {
-        Route::post('/artist/{artist}/restore', [ArtistController::class, 'restore'])->name('artist.restore');
+        Route::post('/artist/{id}/restore', [ArtistController::class, 'restore'])->name('artist.restore');
         Route::get('/artist/restore', [ArtistController::class, 'restore_index'])->name('artist.restore.index');
         Route::resource('/artist', ArtistController::class);
     });

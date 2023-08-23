@@ -22,7 +22,7 @@
                 @if (auth()->user())
                 <div class="mt-10 flex gap-2">
                     <a href="{{ route('artwork.edit', $artwork->id) }}" class="px-10 bg-zinc-900 hover:bg-zinc-800 text-white rounded py-1">Edit</a>
-                    <form action="{{ route('artwork.destroy', $artwork->id) }}" method="POST">
+                    <form id="delete-artwork" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="px-10 bg-red-600 hover:bg-red-500 text-white rounded py-1">Delete</button>
@@ -52,4 +52,39 @@
             </div>
         @endif
     </main>
+
+    <script>
+        $('#delete-artwork').submit(function(event) {
+            event.preventDefault();
+
+            deleteArtwork();
+        })
+
+        var authArtist = "{{ auth()->user()->user_level == 'artist' ? 'true' : 'false' }}"
+
+        function deleteArtwork() 
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('artwork.destroy', $artwork->id) }}",
+                    dataType: "json",
+                    data: {
+                        _method: "DELETE",
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        console.log(response.message);
+                        if (authArtist == 'true') {
+                            window.location.href = "{{ route('artwork.index') }}";
+                        } else {
+                            window.location.href = "{{ route('artwork.index', ['artist' => $artwork->artist_id]) }}";
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+                    }
+                })
+            }
+    </script>
 </x-layout>

@@ -18,7 +18,6 @@ class AdminController extends Controller
     public function index()
     {
         $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
-
         return view('admin.index', ['admins' => $admins]);
     }
 
@@ -42,7 +41,6 @@ class AdminController extends Controller
     {
         $admin = $request->all();
         $admin['user_level'] = UserLevel::ADMIN;
-
         $admin = User::create($admin);
 
         return redirect(route('admin.index'));
@@ -69,7 +67,6 @@ class AdminController extends Controller
     public function update(AdminUpdateRequest $request, User $admin)
     {
         $admin->update($request->all());
-
         return redirect(route('admin.index'));
     }
 
@@ -77,12 +74,13 @@ class AdminController extends Controller
      * Delete admin account
      *
      * @param  mixed $admin
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function destroy(User $admin)
     {
         $admin->delete();
-        return redirect(route('admin.index'));
+        return response()->json(['message' => 'Admin Successfully Deleted.']);
+        // return redirect(route('admin.index'));
     }
 
     /**
@@ -94,12 +92,12 @@ class AdminController extends Controller
     {
         $admins = User::where('user_level', 'admin')->latest()->filter(request(['search']))->get();
 
-        $renderedAdmins = '';
+        $rendered_admins = '';
         foreach ($admins as $admin) {
-            $renderedAdmins .= view('partials.admin-data', ['admin' => $admin])->render();
+            $rendered_admins .= view('partials.admin-data', ['admin' => $admin])->render();
         }
 
-        return response()->json(['admins' => $renderedAdmins]);
+        return response()->json(['admins' => $rendered_admins]);
     }
     
     /**
@@ -109,9 +107,8 @@ class AdminController extends Controller
      */
     public function restore_index()
     {
-        $restorableAdmins = User::onlyTrashed()->where('user_level', 'admin')->get();
-
-        return view('admin.restore', ['admins' => $restorableAdmins]);
+        $restorable_admins = User::onlyTrashed()->where('user_level', 'admin')->get();
+        return view('admin.restore', ['admins' => $restorable_admins]);
     }
     
     /**
