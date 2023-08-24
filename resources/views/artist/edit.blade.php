@@ -171,11 +171,32 @@
                 updateArtist(formData);
             });
 
-            $('#delete-artist').submit(function(event) {
+            $('#delete-artist').on('submit', function(event) {
                 event.preventDefault();
+                var form = $(this);
 
-                deleteArtist();
-            })
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Artist account will be deleted.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#18181b',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Artist Account has been deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        deleteArtist();
+                    }
+                })
+            });
 
             function updateArtist(formData) {
                 formData.append('_method', 'PUT');

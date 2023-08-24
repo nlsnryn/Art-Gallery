@@ -18,6 +18,16 @@
     referrerpolicy="no-referrer"/>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.min.css" rel="stylesheet">
+
+
+    
+    <style>
+        .swal2-popup {
+            background-color: #FFFFFF;
+        }
+    </style>
 </head>
 <body>
     
@@ -42,6 +52,8 @@
             document.getElementById('nav-ekis').classList.toggle('hidden');
             document.getElementById('nav-hamburger').classList.toggle('hidden');
         });
-    </script>
+    </>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </body>
 </html>

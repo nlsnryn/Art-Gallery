@@ -114,12 +114,13 @@ class AdminController extends Controller
     /**
      * Restore the admin
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function restore($admin)
     {
         $admin = User::withTrashed()->find($admin);
         $admin->restore();
-        return redirect(route('admin.restore.index'));
+        return response()->json(['message' => 'Admin account restored.']);
+        // return redirect(route('admin.restore.index'));
     }
 }

@@ -129,9 +129,27 @@
                 event.preventDefault();
                 var form = $(this);
 
-                if (confirm('Are you sure you want to delete this admin?')) {
-                    deleteAdmin(form);
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Admin account will be deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#18181b',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Admin Account has been deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        deleteAdmin(form)
+                    }
+                })
             });
 
             function deleteAdmin(form) {

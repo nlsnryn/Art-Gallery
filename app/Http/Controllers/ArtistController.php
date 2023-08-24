@@ -206,7 +206,7 @@ class ArtistController extends Controller
     /**
      * Restore the artist
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function restore($id)
     {
@@ -228,6 +228,7 @@ class ArtistController extends Controller
         
         $artist->user->restore();
         $artist->restore();
-        return redirect(route('artist.restore.index'));
+        return response()->json(['message' => 'Artist restored.']);
+        // return redirect(route('artist.restore.index'));
     }
 }

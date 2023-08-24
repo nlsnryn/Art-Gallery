@@ -22,7 +22,7 @@
             <div class="hidden sm:block">
             @if (auth()->user())
                 <div class="flex items-center gap-5">
-                    <h1 class="hidden sm:block mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }}, Nelson Ryan</h1>
+                    <h1 class="hidden sm:block mt-0.5 text-white text-sm lg:text-lg font-medium uppercase tracking-wide">Hello! {{ auth()->user()->user_level }},</h1>
 
                     @if (auth()->user()->user_level == 'super admin')
                         <a href="{{ route('admin.index') }}">

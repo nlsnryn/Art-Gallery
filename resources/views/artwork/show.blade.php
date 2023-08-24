@@ -54,15 +54,36 @@
     </main>
 
     <script>
-        $('#delete-artwork').submit(function(event) {
-            event.preventDefault();
+      $(document).ready(function () {
+            $('#delete-artwork').on('submit', function(event) {
+                event.preventDefault();
 
-            deleteArtwork();
-        })
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Artwork will be deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#18181b',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Artwork has been deleted.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
 
-        var authArtist = "{{ auth()->user()->user_level == 'artist' ? 'true' : 'false' }}"
+                        deleteArtwork();
+                    }
+                })
+            });
 
-        function deleteArtwork() 
+            var authArtist = "{{ auth()->user()->user_level == 'artist' ? 'true' : 'false' }}"
+
+            function deleteArtwork() 
             {
                 $.ajax({
                     type: "POST",
@@ -86,5 +107,6 @@
                     }
                 })
             }
+        })
     </script>
 </x-layout>

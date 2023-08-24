@@ -39,7 +39,7 @@
                                 {{ $artist->deleted_at->format('F d, Y') }}
                             </td>
                             <td class="px-6 py-4 flex gap-2">
-                                <form method="POST" action="{{ route('artist.restore', $artist) }}">
+                                <form id="restore-artist" method="POST" action="{{ route('artist.restore', $artist) }}">
                                     @csrf
                                     <button type="submit" class="bg-zinc-900 hover:bg-zinc-800 text-sm px-4 py-1 rounded text-white">Restore</button>
                                 </form>
@@ -61,4 +61,51 @@
             </div>
         </div>
     </main>
+
+    <script>
+        $(document).ready(function () {
+            $('#restore-artist').on('submit', function(event) {
+                event.preventDefault();
+                var form = $(this);
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Artist account will be restore.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#18181b',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, restore it!'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Artist Account has been restored.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        restoreArtist(form);
+                    }
+                })
+            });
+            
+            function restoreArtist(form) {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        console.log(response.message);
+                        window.location.href = "{{ route('artist.restore.index') }}"
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        })
+    </script>
 </x-layout>
