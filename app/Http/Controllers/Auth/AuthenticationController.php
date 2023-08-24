@@ -45,10 +45,10 @@ class AuthenticationController extends Controller
             else 
             {
                 // return back()->withErrors(['email' => 'Invalid Credentials'])->onlyInput('email');
-                return response()->json(['message' => 'Invalid Credentials']);
+                return response()->json(['message' => 'Invalid Credentials'],400);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Invalid Credentials']);
+            return response()->json(['error' => 'Invalid Credentials'],400);
         }
         
     }

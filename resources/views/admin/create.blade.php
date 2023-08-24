@@ -106,6 +106,7 @@
                 event.preventDefault();
 
                 var formData = new FormData($(this)[0]);
+
                 storeAdmin(formData);
             });
 

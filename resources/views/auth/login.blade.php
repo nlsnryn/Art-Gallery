@@ -90,8 +90,9 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        console.log(response.user)
-
+                        if(response.message){
+                            alert(response.message)
+                        }
                         if (response.user) {
                             var routeNames = {
                                 admin: "{{ route('admin.index') }}",
@@ -111,7 +112,7 @@
                         console.log("AJAX Error:", error);
                         console.log(xhr.responseText);
                         
-                        var responseErrors = JSON.parse(xhr.responseText);
+                        var responseErrors = JSON.parse(xhr.responseText.message);
 
                         // Loop through the validation errors and display them
                         $.each(responseErrors.errors, function (key, value) {
